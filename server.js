@@ -36,26 +36,14 @@ let posts = [
 
 // get post of a specific user
 // user should authenticate
-// then authorization is performed based on username
+// then authorization is performed based on role and username
 app.get("/posts", cookieAuth, async (req, res) => {
   const user = req.user;
   // RBAC
   if (user.role === "admin") return res.send(posts);
+
   // ABAC
   res.json(posts.filter((post) => post.author === user.username));
-});
-
-// create a post by a specific user
-// user should authenticate
-app.post("/posts", cookieAuth, async (req, res) => {
-  const username = req.username;
-  const { title } = req.body;
-  if (!title) {
-    return res.send("Title are required");
-  }
-  const newPost = { title, author: username };
-  posts.push(newPost);
-  res.send("Post created successfully");
 });
 
 let sessions = [];
